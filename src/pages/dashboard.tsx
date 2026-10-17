@@ -8,8 +8,10 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { Link as RouterLink } from "react-router-dom";
 
 import { useAuth } from "../auth/AuthContext";
+import { useIsAdmin } from "../hooks/useIsAdmin";
 import type { TimeEntry } from "../api/timeEntries.api";
 import { useTimeEntries } from "../hooks/useTimeEntries";
 import { ActiveTimerCard } from "../components/ActiveTimerCard";
@@ -26,6 +28,7 @@ function getToday(): string {
 
 export function DashboardPage() {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useIsAdmin();
 
   const [selectedDate, setSelectedDate] = useState<string>(getToday);
 
@@ -150,6 +153,12 @@ export function DashboardPage() {
             >
               Add entry
             </Button>
+
+            {isAdmin && (
+              <Button component={RouterLink} to="/admin/users">
+                Manage users
+              </Button>
+            )}
 
             <Button onClick={() => void signOut()}>Sign out</Button>
           </Stack>
