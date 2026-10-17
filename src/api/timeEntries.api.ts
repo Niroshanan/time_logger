@@ -8,16 +8,17 @@ export type UpdateTimeEntry = TablesUpdate<"time_entries">;
 
 export async function getTimeEntries(
     userId: string,
+    date: string,
 ): Promise<TimeEntry[]> {
     const { data, error } = await supabase
         .from("time_entries")
         .select("*")
         .eq("user_id", userId)
-        .order("entry_date", { ascending: false })
+        .eq("entry_date", date)
         .order("start_time", { ascending: false });
 
     if (error) throw error;
-    return data;
+    return data ?? [];
 }
 
 export async function createTimeEntry(

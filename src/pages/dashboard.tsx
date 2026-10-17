@@ -17,8 +17,17 @@ import { TimeEntryList } from "../components/TimeEntryList";
 import { TimeEntryFormDialog } from "../components/TimeEntryFormDialog";
 import { DeleteTimeEntryDialog } from "../components/DeleteTimeEntryDialog";
 
+function getToday(): string {
+  const now = new Date();
+  const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60_000);
+
+  return localDate.toISOString().slice(0, 10);
+}
+
 export function DashboardPage() {
   const { user, signOut } = useAuth();
+
+  const [selectedDate, setSelectedDate] = useState<string>(getToday);
 
   const {
     data: entries = [],
@@ -31,7 +40,7 @@ export function DashboardPage() {
     isCreating,
     isUpdating,
     isDeleting,
-  } = useTimeEntries(user?.id);
+  } = useTimeEntries(selectedDate, user?.id);
 
   const [formOpen, setFormOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<TimeEntry | null>(null);
@@ -102,34 +111,37 @@ export function DashboardPage() {
   if (!user) {
     return (
       <Container sx={{ py: 6 }}>
-        <Typography>Please sign in to access time tracking.</Typography>
+        {" "}
+        <Typography>Please sign in to access time tracking.</Typography>{" "}
       </Container>
     );
   }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
+      {" "}
       <Stack spacing={4}>
+        {" "}
         <Stack
           direction={{ xs: "column", sm: "row" }}
           sx={{
             justifyContent: "space-between",
-            alignItems: {
-              xs: "stretch",
-              sm: "center",
-            },
+            alignItems: { xs: "stretch", sm: "center" },
           }}
           spacing={2}
         >
+          {" "}
           <Box>
+            {" "}
             <Typography variant="h4" sx={{ fontWeight: 700 }}>
-              Dashboard
-            </Typography>
+              {" "}
+              Dashboard{" "}
+            </Typography>{" "}
             <Typography color="text.secondary">
-              Welcome, {user.email}
-            </Typography>
+              {" "}
+              Welcome, {user.email}{" "}
+            </Typography>{" "}
           </Box>
-
           <Stack direction="row" spacing={1}>
             <Button
               variant="contained"
@@ -142,38 +154,34 @@ export function DashboardPage() {
             <Button onClick={() => void signOut()}>Sign out</Button>
           </Stack>
         </Stack>
-
         {actionError && (
           <Alert severity="error" onClose={() => setActionError("")}>
             {actionError}
           </Alert>
         )}
-
         <ActiveTimerCard userId={user.id} />
-
         <Box>
-          <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
-            Time entries
-          </Typography>
+          <TimeEntryList
+            entries={entries}
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+            onEdit={handleEdit}
+            onDelete={setEntryToDelete}
+          />
 
-          {isLoading ? (
-            <Typography>Loading time entries...</Typography>
-          ) : isError ? (
-            <Alert severity="error">
+          {isLoading && (
+            <Typography sx={{ mt: 2 }}>Loading time entries...</Typography>
+          )}
+
+          {isError && (
+            <Alert severity="error" sx={{ mt: 2 }}>
               {error instanceof Error
                 ? error.message
                 : "Failed to load time entries."}
             </Alert>
-          ) : (
-            <TimeEntryList
-              entries={entries}
-              onEdit={handleEdit}
-              onDelete={setEntryToDelete}
-            />
           )}
         </Box>
       </Stack>
-
       <TimeEntryFormDialog
         open={formOpen}
         entry={selectedEntry}
@@ -184,7 +192,6 @@ export function DashboardPage() {
         }}
         onSubmit={handleSave}
       />
-
       <DeleteTimeEntryDialog
         entry={entryToDelete}
         deleting={isDeleting}
