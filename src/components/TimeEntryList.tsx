@@ -2,6 +2,7 @@ import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import type { TimeEntry } from "../api/timeEntries.api";
+import { calculateDuration } from "../utils/timeHelper";
 
 type Props = {
   entries: TimeEntry[];
@@ -25,15 +26,9 @@ export function TimeEntryList({ entries, onEdit, onDelete }: Props) {
     <Stack spacing={1.5}>
       {entries.map((entry) => (
         <Paper key={entry.id} variant="outlined" sx={{ p: 2 }}>
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            sx={{
-              justifyContent: "space-between",
-              alignItems: { xs: "stretch", sm: "center" },
-            }}
-            spacing={2}
-          >
-            <Box sx={{ minWidth: 0 }}>
+          <Stack direction="row" spacing={2} sx={{ alignItems: "stretch" }}>
+            {/* Left column: task details */}
+            <Box sx={{ flex: 1, minWidth: 0 }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                 {entry.task_name}
               </Typography>
@@ -54,7 +49,29 @@ export function TimeEntryList({ entries, onEdit, onDelete }: Props) {
               )}
             </Box>
 
-            <Stack direction="row" spacing={1}>
+            {/* Middle column: duration, centered across the content height */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                minWidth: 90,
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 600, whiteSpace: "nowrap" }}
+              >
+                {calculateDuration(entry.start_time, entry.end_time)}
+              </Typography>
+            </Box>
+
+            {/* Right column: actions */}
+            <Stack
+              direction="column"
+              spacing={0.5}
+              sx={{ justifyContent: "center", alignItems: "flex-end" }}
+            >
               <Button
                 size="small"
                 startIcon={<EditOutlinedIcon />}
