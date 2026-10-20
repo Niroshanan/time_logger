@@ -18,6 +18,7 @@ import { ActiveTimerCard } from "../components/ActiveTimerCard";
 import { TimeEntryList } from "../components/TimeEntryList";
 import { TimeEntryFormDialog } from "../components/TimeEntryFormDialog";
 import { DeleteTimeEntryDialog } from "../components/DeleteTimeEntryDialog";
+import ThemeToggle from "../components/ThemeToggle";
 
 function getToday(): string {
   const now = new Date();

@@ -1,0 +1,25 @@
+:root {
+  color-scheme: light;
+
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --primary: #4f46e5;
+  --border: #e2e8f0;
+  --input: #ffffff;
+  --danger: #dc2626;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: #0f172a;
+  --surface: #1e293b;
+  --foreground: #f1f5f9;
+  --muted: #94a3b8;
+  --primary: #818cf8;
+  --border: #334155;
+  --input: #1e293b;
+  --danger: #f87171;
+}
