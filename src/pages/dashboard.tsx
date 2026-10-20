@@ -8,28 +8,26 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { Link as RouterLink } from "react-router-dom";
 
 import { useAuth } from "../auth/AuthContext";
-import { useIsAdmin } from "../hooks/useIsAdmin";
 import type { TimeEntry } from "../api/timeEntries.api";
 import { useTimeEntries } from "../hooks/useTimeEntries";
 import { ActiveTimerCard } from "../components/ActiveTimerCard";
 import { TimeEntryList } from "../components/TimeEntryList";
 import { TimeEntryFormDialog } from "../components/TimeEntryFormDialog";
 import { DeleteTimeEntryDialog } from "../components/DeleteTimeEntryDialog";
-import ThemeToggle from "../components/ThemeToggle";
 
 function getToday(): string {
   const now = new Date();
-  const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60_000);
+  const localDate = new Date(
+    now.getTime() - now.getTimezoneOffset() * 60_000
+  );
 
   return localDate.toISOString().slice(0, 10);
 }
 
 export function DashboardPage() {
-  const { user, signOut } = useAuth();
-  const { isAdmin } = useIsAdmin();
+  const { user } = useAuth();
 
   const [selectedDate, setSelectedDate] = useState<string>(getToday);
 
@@ -47,8 +45,10 @@ export function DashboardPage() {
   } = useTimeEntries(selectedDate, user?.id);
 
   const [formOpen, setFormOpen] = useState(false);
-  const [selectedEntry, setSelectedEntry] = useState<TimeEntry | null>(null);
-  const [entryToDelete, setEntryToDelete] = useState<TimeEntry | null>(null);
+  const [selectedEntry, setSelectedEntry] =
+    useState<TimeEntry | null>(null);
+  const [entryToDelete, setEntryToDelete] =
+    useState<TimeEntry | null>(null);
   const [actionError, setActionError] = useState("");
 
   const handleAdd = () => {
@@ -70,7 +70,9 @@ export function DashboardPage() {
     end_time: string;
     notes: string | null;
   }) => {
-    if (!user) throw new Error("Please sign in first.");
+    if (!user) {
+      throw new Error("Please sign in first.");
+    }
 
     setActionError("");
 
@@ -91,8 +93,11 @@ export function DashboardPage() {
       setSelectedEntry(null);
     } catch (error) {
       setActionError(
-        error instanceof Error ? error.message : "Could not save entry."
+        error instanceof Error
+          ? error.message
+          : "Could not save entry."
       );
+
       throw error;
     }
   };
@@ -107,70 +112,74 @@ export function DashboardPage() {
       setEntryToDelete(null);
     } catch (error) {
       setActionError(
-        error instanceof Error ? error.message : "Could not delete entry."
+        error instanceof Error
+          ? error.message
+          : "Could not delete entry."
       );
     }
   };
 
   if (!user) {
     return (
-      <Container sx={{ py: 6 }}>
-        {" "}
-        <Typography>Please sign in to access time tracking.</Typography>{" "}
+      <Container maxWidth="lg" sx={{ py: 6 }}>
+        <Typography>
+          Please sign in to access time tracking.
+        </Typography>
       </Container>
     );
   }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {" "}
-      <ThemeToggle />
       <Stack spacing={4}>
-        {" "}
+        {/* Page header */}
         <Stack
           direction={{ xs: "column", sm: "row" }}
           sx={{
             justifyContent: "space-between",
-            alignItems: { xs: "stretch", sm: "center" },
+            alignItems: {
+              xs: "stretch",
+              sm: "center",
+            },
           }}
           spacing={2}
         >
-          {" "}
           <Box>
-            {" "}
-            <Typography variant="h4" sx={{ fontWeight: 700 }}>
-              {" "}
-              Dashboard{" "}
-            </Typography>{" "}
-            <Typography color="text.secondary">
-              {" "}
-              Welcome, {user.email}{" "}
-            </Typography>{" "}
-          </Box>
-          <Stack direction="row" spacing={1}>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleAdd}
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: 700 }}
             >
-              Add entry
-            </Button>
+              Dashboard
+            </Typography>
 
-            {isAdmin && (
-              <Button component={RouterLink} to="/admin/users">
-                Manage users
-              </Button>
-            )}
+            <Typography color="text.secondary">
+              Welcome, {user.email}
+            </Typography>
+          </Box>
 
-            <Button onClick={() => void signOut()}>Sign out</Button>
-          </Stack>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleAdd}
+          >
+            Add entry
+          </Button>
         </Stack>
+
+        {/* Action error */}
         {actionError && (
-          <Alert severity="error" onClose={() => setActionError("")}>
+          <Alert
+            severity="error"
+            onClose={() => setActionError("")}
+          >
             {actionError}
           </Alert>
         )}
+
+        {/* Active timer */}
         <ActiveTimerCard userId={user.id} />
+
+        {/* Time entries */}
         <Box>
           <TimeEntryList
             entries={entries}
@@ -181,7 +190,9 @@ export function DashboardPage() {
           />
 
           {isLoading && (
-            <Typography sx={{ mt: 2 }}>Loading time entries...</Typography>
+            <Typography sx={{ mt: 2 }}>
+              Loading time entries...
+            </Typography>
           )}
 
           {isError && (
@@ -193,6 +204,8 @@ export function DashboardPage() {
           )}
         </Box>
       </Stack>
+
+      {/* Add / edit dialog */}
       <TimeEntryFormDialog
         open={formOpen}
         entry={selectedEntry}
@@ -203,6 +216,8 @@ export function DashboardPage() {
         }}
         onSubmit={handleSave}
       />
+
+      {/* Delete confirmation dialog */}
       <DeleteTimeEntryDialog
         entry={entryToDelete}
         deleting={isDeleting}

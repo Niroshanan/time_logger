@@ -4,13 +4,13 @@ import { createTheme } from "@mui/material/styles";
 export const createAppTheme = (mode: "light" | "dark") => {
   const colors = {
     light: {
-      background: "#f8fafc",
-      surface: "#ffffff",
+      background: "#e4e4e4",
+      surface: "#cfcfcf",
       foreground: "#0f172a",
       muted: "#64748b",
-      primary: "#4f46e5",
-      border: "#e2e8f0",
-      input: "#ffffff",
+      primary: "#6687b6",
+      border: "#b8bdc4",
+      input: "#d4d4d4",
       danger: "#dc2626",
     },
     dark: {
@@ -18,7 +18,7 @@ export const createAppTheme = (mode: "light" | "dark") => {
       surface: "#1e293b",
       foreground: "#f1f5f9",
       muted: "#94a3b8",
-      primary: "#818cf8",
+      primary: "#6687b6",
       border: "#334155",
       input: "#1e293b",
       danger: "#f87171",
