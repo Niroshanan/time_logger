@@ -124,6 +124,7 @@ export function DashboardPage() {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {" "}
+      <ThemeToggle />
       <Stack spacing={4}>
         {" "}
         <Stack
